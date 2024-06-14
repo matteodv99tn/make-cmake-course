@@ -15,7 +15,14 @@ sudo apt install -y build-essential git
 ```
 
 ### MacOS
-**TODO**
+
+**DISCLAIMER**: I don't use a Mac PC (and my dear collegues can't back me up on this guide).
+
+You could follow [this thread](https://stackoverflow.com/questions/10265742/how-to-install-make-and-gcc-on-a-mac), but essentially you must install ``xcode`` (in the terminal run ``xcode-select --install`` and press the _install_ button on the pop-up that appears).
+Since it might be useful, also install [Homebrew](https://brew.sh/); with that, you should be able to install _make_ with
+```
+brew install make
+```
 
 ### Windows (using WSL, recommended)
 
