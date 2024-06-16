@@ -53,9 +53,17 @@ If you don't know what to use, I suggest to use [Visual Studio Code](https://cod
 VSCode is available for both Linux, MacOS and Windows. For Windows users it is possible to install the WSL extension for the editor, enabling to open a WSL terminal and project directly from VSCode.
 
 
-## Material
+## Course material
 
 In this repository you will find the material for the course, i.e.:
 - the slides used during the course (available **after** the ending of each lesson);
 - some simple source code that will be used as baseline for the course. Here no ``Makefile`` and ``CMakeLists.txt`` files are provided (we will create it during the course), but these files will be uploaded separately after the end of the course.
 
+## Other material
+
+This are good resources to deepen the knowledge (and that inspired lots of the content of this course):
+
+- a [1 hour lesson](https://youtu.be/DtGrdB8wQ_8?si=8lf4swdBVedt2oiq) on the use of Make;
+- a playlist on the [use of CMake](https://youtube.com/playlist?list=PL8i3OhJb4FNV10aIZ8oF0AA46HgA2ed8g&si=GBqprrje9xDky1dm).
+- the [official make documentation](https://www.gnu.org/software/make/manual/make.html)
+- the [official cmake documentation](https://cmake.org/cmake/help/latest/index.html)
