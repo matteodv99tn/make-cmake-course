@@ -1,0 +1,67 @@
+\documentclass[12pt,aspectratio=169]{beamer}
+
+\usepackage[utf8]{inputenc} 
+\usepackage[T1]{fontenc}
+\usepackage{listings}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{hyperref}
+
+\usetheme[progressbar=frametitle]{metropolis}
+\title{Make and Cmake: what are they?!}
+\subtitle{An introduction to tools for C and C++ compilation}
+\author{Matteo Dalle Vedove}
+\institute{Dept. of Industrial Engineering, University of Trento}
+\date{June 17-18, 2024}
+
+\renewcommand{\emph}[1]{\alert{\itshape #1}}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\small,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    % numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+\lstset{style=mystyle}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=mDarkTeal,
+    % filecolor=magenta,      
+    urlcolor=NavyBlue,
+    % pdftitle={Overleaf Example},
+    % pdfpagemode=FullScreen,
+    }
+
+\begin{document}
+    \maketitle
+
+    \begin{frame}{Overview}
+        \tableofcontents
+    \end{frame}
+
+    \input{Slides/introduction.tex}
+    \input{Slides/setup.tex}
+    \input{Slides/compilation.tex}
+    \input{Slides/makefiles.tex}
+    \input{Slides/cmake.tex}
+    \input{Slides/advancedcmake.tex}
+
+\end{document}
+

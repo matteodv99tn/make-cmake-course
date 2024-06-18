@@ -1,0 +1,66 @@
+\section{Advanced CMake}
+\begin{frame}{Advanced CMake}
+    Until now we used the basic features of CMake, showing the potential over plain Make.
+
+From now, we will see some advanced features that are necessary to handle more complex, real-world projects.
+\end{frame}
+
+\begin{frame}[fragile]{CMake: finding packages}
+    Any decently-complex \emph{project} will \emph{depend on external libraries} (e.g., \textit{Eigen} for linear algebra, \textit{OpenCV} for image processing, etc.).
+
+    To ensure that such dependencies are met, we can use the \href{https://cmake.org/cmake/help/latest/command/find_package.html}{\texttt{find\_package}} command.
+
+    Libraries are searched system-wide, or in directories specified by the \texttt{CMAKE\_PREFIX\_PATH} variable. Suggestions on a per-package basis are avaible.
+\end{frame}
+
+\begin{frame}[fragile]{CMake: finding packages}
+\begin{lstlisting}
+find_package(Eigen3 REQUIRED)
+find_package(OpenCV)
+\end{lstlisting}
+    
+    In this example, not finding the \textit{Eigen} library will abort the configuration step, since we set the \texttt{REQUIRED} keyword.
+
+    The \texttt{OpenCV} package is instead optional, i.e., failing to find it will not stop the project build. \\
+    The call to \texttt{find\_package} will set some variables, like \texttt{OpenCV\_FOUND} which can be queried to assess wethever the package was found (or not).
+\end{frame}
+
+\begin{frame}[fragile]{CMake: using packages}
+    Once the package is found, it can be used as any other target in cmake, e.g. by linking it to a target:
+\begin{lstlisting}
+add_executable(my_target main.cpp)
+target_link_libraries(my_target Eigen3::Eigen)
+\end{lstlisting}
+    This will link the \texttt{my\_target} executable with the \textit{Eigen} library.
+    
+    In this case, we use a \textit{namespaced} target linking, which is a modern (and recommended) way to handle dependencies in CMake, i.e., of the form \texttt{<package\_name>::<target>}.
+\end{frame}
+
+\begin{frame}[fragile]{CMake: fetching content}
+    To easen development, cmake provides some useful commands to integrate different projects.
+
+    In this regard, \href{https://cmake.org/cmake/help/latest/module/FetchContent.html}{\texttt{FetchContent}} is a powerful tool to download external projects and build them along with your application.
+
+\begin{lstlisting}
+include(FetchContent)
+FetchContent_Declare(
+    Eigen3
+    URL https://gitlab.com/libeigen/eigen/-/archive/3.4.0/eigen-3.4.0.zip
+    FIND_PACKAGE_ARGS NAMES Eigen3
+)
+FetchContent_MakeAvailable(Eigen3)
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{CMake: file configuration}
+    Sometimes it might be necessary to set some variables of the project at configuration time, e.g., the project version or some path.
+
+    To this extent, \href{https://cmake.org/cmake/help/latest/module/FetchContent.html}{\texttt{configure\_file}} is a function that takes as input a template file and write a new file with cmake variable substituted:
+
+\begin{lstlisting}
+configure_file(
+    defines.hpp.in
+    defines.hpp
+)
+\end{lstlisting}
+\end{frame}

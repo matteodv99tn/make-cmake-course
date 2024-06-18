@@ -1,0 +1,13 @@
+\begin{lstlisting}
+CC=gcc
+
+all: main
+
+clean:
+    rm -f *.o main
+
+main: lib.o main.o
+    $(CC) -o $@ $^ 
+
+%.o: %.c
+    $(CC) -c $^ -o $@\end{lstlisting}

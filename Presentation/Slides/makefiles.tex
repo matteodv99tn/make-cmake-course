@@ -1,0 +1,169 @@
+\section{Make and Makefiles}
+
+\begin{frame}{What is Make?}
+    By definition,
+    \begin{center}
+        \itshape
+        \alert{GNU Make} is a tool which controls the generation of executables and other non-source files of a program from the program's source files.
+    \end{center}
+
+    In this regard, make is a \emph{build system}, a tool that automates the action of \textit{building} an application, i.e. it collects dependencies, creates objects, and it links them. 
+
+    Make is a programming language that enables to abstract the build procedure, providing simpler way to compile executables using variables and rules.
+\end{frame}
+
+\begin{frame}{Why Make?}
+    Make addresses all the limitations of the manual/scripted compilation process:
+    \begin{itemize}
+        \item \emph{reproducibility}: the build process is defined in a single file, so it can be easily shared and executed on different machines;
+        \item \emph{efficiency}: make \textbf{only recompiles} the files that have changed;
+        \item \emph{maintainability}: using variables and rules, the build process is more readable and maintainable.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{How to use Make?}
+    To use make to build a project, it is necessary to create a \emph{Makefile} containing all the rules to build the project.
+
+    After that, when inside the project directory, we can run the command \texttt{make} to build the project.
+\end{frame}
+
+\begin{frame}[fragile]{Makefiles}
+    Let us consider the compile script we have seen before and the corresponding \textit{Makefile}:
+    \begin{columns}[c]
+      \begin{column}{0.48\textwidth}
+        \begin{lstlisting}
+gcc -c lib.c 
+gcc -c main.c 
+gcc lib.o main.o -o main \end{lstlisting}
+      \end{column}
+      \begin{column}{0.48\textwidth}
+          \input{Snippets/makefile_01.tex}
+      \end{column}
+    \end{columns}
+
+\end{frame}
+
+\begin{frame}[fragile]{Makefiles}
+    \begin{columns}[c]
+      \begin{column}{0.48\textwidth}
+          Each Makefile contains a set of \emph{rules} of the form
+        \begin{lstlisting}
+<target>:<dependencies>
+    <steps>\end{lstlisting}
+        \begin{itemize}
+            \item \emph{target} is the output of the rule;
+            \item \emph{dependencies} are the required rules to build the target;
+            \item \emph{steps} are all commands required to generate the target.
+        \end{itemize}
+      \end{column}
+      \begin{column}{0.48\textwidth}
+          \input{Snippets/makefile_01.tex}
+      \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{Makefiles: so what?}
+    \begin{columns}[c]
+      \begin{column}{0.48\textwidth}
+          At this stage, the only advantage bring by make is that only source code that will be actually modified is re-compiled. \vspace{3mm}
+
+          To improve, we will start making use of \emph{regular expressions} and \emph{variables}.
+      \end{column}
+      \begin{column}{0.48\textwidth}
+          \input{Snippets/makefile_01.tex}
+      \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{Makefiles: variables}
+    \begin{columns}[c]
+      \begin{column}{0.48\textwidth}
+          In Makefiles we can define \emph{variables} that can be used in the code as:
+        \begin{lstlisting}
+<NAME>=<VALUE>\end{lstlisting} \vspace{3mm}
+    
+        \texttt{\$(<NAME>)} denotes the access of a variable. \vspace{3mm}
+
+        Two \textit{special} variables:
+        \begin{itemize}
+            \makeatletter
+            \item \texttt{\$@}: current target;
+            \item \texttt{\$\^}: target dependencies;
+            \item \texttt{\$<}: first target dependency;
+            \item \texttt{\$?}: \textit{updated} target dependencies;
+        \end{itemize}
+        
+
+        
+      \end{column}
+      \begin{column}{0.52\textwidth}
+          \input{Snippets/makefile_02.tex}
+      \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{Makefiles: regular expressions}
+    \begin{columns}[c]
+      \begin{column}{0.42\textwidth}
+          By using the \emph{wildcard} \texttt{\%} (or, in general, any regular expression), we can create a more \textit{general} makefile.
+      \end{column}
+      \begin{column}{0.54\textwidth}
+          \input{Snippets/makefile_03.tex}
+      \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{Makefiles: targets}
+    \begin{columns}[c]
+      \begin{column}{0.42\textwidth}
+          Within the same makefile, it is possible to create multiple targets.  \vspace{3mm}
+
+          Running the plain \texttt{make} command will build, by default, the top-most target (\texttt{all} in this case). \vspace{3mm}
+
+          But we can also specify the target to generate, like \texttt{make clean}.
+      \end{column}
+      \begin{column}{0.54\textwidth}
+          \input{Snippets/makefile_04.tex}
+      \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{Makefiles: suppressing commands}
+    When running, make will display the actual shell command that's executed (e.g. \textit{gcc -o lib lib.c ...}).
+
+    To avoid this behavior, it is simply necessary to prepend a \texttt{@} character at the beginning of the line, e.g.:
+    \begin{lstlisting}
+clean:
+    @echo "Removing .o and .s files"
+    @rm -f *.o *.s\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{Makefiles: target dependencies}
+    In practice, make decides to rebuild a rule when the provided dependencies have \textit{newer} updates w.r.t. to the target itself.
+
+    This, however, doesn't capture all the semantic dependencies between files. \\
+    For instance, changing a header \textit{.h, .hpp} won't trigger the compilation of all objects that depends from them (since they are not explicit dependencies).
+\end{frame}
+
+\begin{frame}[fragile]{Makefiles: embed header dependencies}
+    To embed relationship between source code and header:
+    \begin{itemize}
+        \item add the \texttt{-MP -MD} compilation flag to generate \textit{.d} dependency files;
+        \item append \texttt{-include <files...>.d} at the end of the makefile.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{A Makefile example}
+    \centering
+    \textit{Let's build a makefile for the project in the git repository}
+\end{frame}
+
+\begin{frame}{Why not to use Make?}
+    Make is a powerful build system, better then basic shell scripting. However:
+    \begin{itemize}
+        \item as the project gets bigger, it is \textit{harder} to maintain;
+        \item it requires knowledge of CLI tools to accomplish multiple tasks;
+        \item it is hard to manage external dependencies (e.g. other libraries).
+    \end{itemize}
+
+\end{frame}

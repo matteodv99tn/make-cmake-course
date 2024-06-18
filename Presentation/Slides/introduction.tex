@@ -1,0 +1,37 @@
+\section{Introduction to the course}
+\begin{frame}{What is programming?}
+
+    When we program, we want to write \emph{code}, i.e. instructions, that can \emph{run} on some hardware.
+
+    To do so, we can use lots of different \emph{programming languages}. 
+    Each programming language has its own \textit{syntax} and \textit{semantics}, and they might be target to different type of use (e.g.,  Web Applications, Mobile Applications, Embedded Systems, etc.).
+
+\end{frame}
+
+\begin{frame}{Compiled or interpreted?}
+
+    The main categorization of programming languages is between
+    \begin{itemize}
+        \item \emph{Interpreted languages}, like Python, Matlab and Julia, in which the code is translated (at runtime) into a \textit{byte-code} (an intermediate representation) that is then executed by an \textit{interpreter} on the machine.
+        \item \emph{Compiled languages}, like C, C++ and Rust, instead employ a \emph{compiler} to directly translate the \textit{source code} into a \textit{binary} that can be executed by the machine.
+    \end{itemize}
+
+\end{frame}
+
+
+\begin{frame}{Why a compiler?}
+    A compiler enables an efficient translation of the source code into a binary that can be directly executed by the machine. 
+    W.r.t. running an interpreted language, this has several advantages:
+    \begin{itemize}
+        \item the binary is generally \emph{faster} to execute, as it is directly understood by the machine;
+        \item the compiler can perform \emph{optimizations} on the code, to make it faster or smaller;
+        \item the compiler can perform \emph{static analysis} on the code, to catch errors before running it.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Why not a compiler?}
+
+    Compiled languages are generally more complex to use than interpreted languages, since they involve multiple steps to have a program that can run (e.g., compilation, linking, etc.). 
+
+    In addition, the compiler depends on the \emph{platform} (e.g., the operating system, the hardware, etc.), so the same code might need to be recompiled to run on different platforms.
+\end{frame}

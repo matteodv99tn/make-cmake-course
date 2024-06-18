@@ -1,0 +1,9 @@
+\begin{lstlisting}
+main: lib.o main.o
+    gcc lib.o main.o -o main
+
+lib.o: lib.c
+    gcc -c lib.c
+
+main.o: main.c 
+    gcc -c main.c\end{lstlisting}

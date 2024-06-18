@@ -1,0 +1,14 @@
+\begin{lstlisting}
+CC=gcc
+CFLAGS=-Wall -Wextra
+OBJS=lib.o main.o
+BINARY=main
+
+$(BINARY): $(OBJS)
+    $(CC) -o $@ $^ 
+
+lib.o: lib.c
+    $(CC) $(CFLAGS) -c lib.c
+
+main.o: main.c 
+    $(CC) $(CFLAGS) -c main.c\end{lstlisting}

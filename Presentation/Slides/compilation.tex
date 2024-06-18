@@ -1,0 +1,118 @@
+\section{Compiling the code}
+\begin{frame}[fragile]{Hello world!}
+    The first thing we can do is the basic \textit{hello world} executable in plain C.
+
+    First let's create a \texttt{hello.c} file:
+\begin{lstlisting}[language=C]
+#include <stdio.h>
+
+int main() {
+    printf("Hello, world!");
+    return 0;
+} \end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{Hello world!}
+    We can now switch to the terminal to actually compile the code:
+
+    \begin{lstlisting}
+gcc hello.c -o hello \end{lstlisting}
+
+In this command we:
+\begin{itemize}
+    \item call the \texttt{gcc} compiler;
+    \item specify the source file \texttt{hello.c};
+    \item specify the output (\texttt{-o}) object \texttt{hello}.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Hello world!}
+    \begin{lstlisting}
+gcc hello.c -o hello \end{lstlisting}
+    
+    Under the hood, this command performs lots of operations:
+    \begin{itemize}
+        \item it \emph{pre-process} the \textit{.c, .cpp} source code (e.g., header and macro expansion);
+        \item it \emph{compiles} the code into assembly code that's specific to the target architecture;
+        \item the \emph{assembler} converts the assembly code into machine code (\textit{.o, .obj});
+        \item the \emph{linker} links the object files into a final executable (\textit{.out, .exe}).
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{A more complex example}
+
+    Let's create a simple project that involves multiple sources: a library (\textit{lib.c, lib.h}) and a main program \textit{main.c}.
+
+    There are two \textit{equivalent} ways to compile the code: either
+
+    \begin{lstlisting}
+gcc lib.c main.c -o main \end{lstlisting}
+    or
+    \begin{lstlisting}
+gcc -c lib.c 
+gcc -c main.c 
+gcc lib.o main.o -o main \end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{Some compilation flags}
+    \begin{lstlisting}
+gcc -c lib.c \end{lstlisting}
+
+    In this command, the \texttt{-c} flag tells the compiler to compile and assembly the \textit{lib.c} source code, creating \textit{lib.o} (since we didn't specify the output with \texttt{-o}).
+\end{frame}
+
+\begin{frame}[fragile]{Some compilation flags}
+    A complete list of compiler flags can be found by running
+    \begin{lstlisting}
+gcc --help \end{lstlisting}
+
+    Some relevant flags are:
+    \begin{itemize}
+        \item \texttt{-E}: perform only the pre-processing;
+        \item \texttt{-S}: perform only the compilation to assembly \textit{.s};
+    \end{itemize}
+
+\end{frame}
+
+\begin{frame}[fragile]{Best compilation method}
+
+    What's better between the two methods?
+    \begin{columns}[c]
+      \begin{column}{0.48\textwidth}
+        \begin{lstlisting}
+gcc lib.c main.c -o main \end{lstlisting}
+      \end{column}
+      \begin{column}{0.48\textwidth}
+        \begin{lstlisting}
+gcc -c lib.c 
+gcc -c main.c 
+gcc lib.o main.o -o main \end{lstlisting}
+
+      \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{Simplifying the compilation}
+
+    The work of compilation is tedious and error-prone. Each time we modify our source code, we need to update our objects and link the final executable.
+
+    How can we simplify this process?
+
+    Let's put all the commands into a \emph{shell script}$\,$! \\
+    For example, we can create a \texttt{build.sh} file with the following content:
+    \begin{lstlisting}
+gcc -c lib.c 
+gcc -c main.c 
+gcc lib.o main.o -o main \end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{Shell scripts for compilation}
+    Using a shell script is a good idea, but it's not the best solution.
+
+    Indeed there are few drawbacks:
+    \begin{itemize}
+        \item \textit{.sh} scripts are not scalable;
+        \item \textit{.sh} scripts are less configurable;
+        \item each time, we need to recompile all the sources. This is no problem for small projects, but it's a big issue for large ones (e.g. the Linux kernel takes hours to compile).
+    \end{itemize}
+\end{frame}

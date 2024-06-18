@@ -1,0 +1,9 @@
+\begin{lstlisting}
+CC=gcc
+CFLAGS=-Wall -Wextra
+
+main: lib.o main.o
+    $(CC) -o $@ $^ 
+
+%.o: %.c
+    $(CC) $(CFLAGS) -c $^ -o $@\end{lstlisting}

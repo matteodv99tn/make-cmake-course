@@ -1,0 +1,281 @@
+\section{CMake}
+\begin{frame}{What is CMake?}
+
+    \emph{CMake} might be regarded as an abstraction on top of makefiles.
+
+    Indeed, cmake is \emph{not a build system} by itself, but rather a multi-platform \emph{generator for build system}.
+
+    CMake can in fact generate configuration files for make, \textit{ninja} or \textit{visual studio projects}.
+    
+\end{frame}
+
+\begin{frame}[fragile]{CMake in 3 lines}
+
+    CMake projects are configured in \emph{CMakeLists.txt} files.
+
+    A simple example is
+    \input{Snippets/cmake_01.tex}
+    in which we create an executable \textit{hello} starting from a single source file \textit{main.cpp}.
+
+\end{frame}
+
+\begin{frame}[fragile]{CMake in 3 lines: and now?}
+    With the \textit{CMakeLists.txt} file in place, we have to generate the file for our build system.
+
+    One cool feature of cmake is that it enables to easily \emph{decouple} the \emph{source code} from the \emph{build} (they can live in different directories in the system).
+
+    A known standard is to create a \textit{build} folder inside the root directory of the project.
+\end{frame}
+
+\begin{frame}[fragile]{CMake in 3 lines: and now?}
+    With the \textit{CMakeLists.txt} file in place, we have to generate the file for our build system.
+
+    To list availables \emph{generators}, run the command \texttt{cmake -G}. 
+
+    From within the \textit{build} directory, we \emph{configure} the project with the command\\
+    \texttt{cmake <path/to/prj> -G makefiles}
+
+    If we don't specify the \texttt{-G} flag, we use the default generator (most probably \textit{make} or \textit{ninja}).
+
+\end{frame}
+
+\begin{frame}[fragile]{CMake in 3 lines: and now?}
+    With the \textit{CMakeLists.txt} file in place, we have to generate the file for our build system.
+
+    From within the \textit{build} directory, we configure the project with the command\\
+    \texttt{cmake <path/to/prj> -G makefiles}
+
+    We can now \emph{call} the build system to build the project, i.e., running \texttt{make} (or the chosen generator).
+
+\end{frame}
+
+\begin{frame}[fragile]{CMake: generate and build}
+    To have access to a full list of arguments, call \texttt{cmake -h}. Generally, to generate a project:
+\begin{lstlisting}
+cmake [options] <path/to/source>
+cmake [options] <path/to/existing/build>
+cmake [options] -S <path/to/source> -B <path/to/build>
+\end{lstlisting}
+
+Then, to build a project (regardless of the generator), call
+\begin{lstlisting}
+cmake --build <path/to/build>
+\end{lstlisting}
+
+\end{frame}
+
+
+\begin{frame}[fragile]{CMake: executables and libraries}
+    With cmake we can mainly handle 2 kind of \textit{objects}:
+    \begin{itemize}
+        \item \emph{executables}, so application that \textit{can run} (having a \textit{main} function);
+            \begin{lstlisting}               
+add_executable(<exec name> <sources...>)
+\end{lstlisting}
+            
+        \item \emph{libraries}, so binary objects that are not executables but contains implementaiton of functions.
+            \begin{lstlisting}               
+add_library(<lib name> <STATIC | SHARED> <srcs...>)
+\end{lstlisting}
+    \end{itemize}
+\end{frame}
+
+% \begin{frame}[fragile]{CMake: adding sources}
+%     Even though it's not a good practise, it is possible to add source files after the executable/library has been declare through the \texttt{target\_sources} function, e.g.
+% \begin{lstlisting}
+% add_library(mylib src/lib1.cpp src/lib2.cpp)   
+% 
+% # ... few lines later
+% target_source(mylib src/lib3.cpp)
+% \end{lstlisting}
+% 
+% \end{frame}
+
+\begin{frame}[fragile]{CMake: variables}
+    As in make, cmake makes extensive use of \emph{variables}. 
+
+    A variable is defined with the \href{https://cmake.org/cmake/help/latest/command/set.html#set}{\texttt{set}} function and can be accessed with the \alert{\texttt{\$\{\}}} notation:
+\begin{lstlisting}
+set(LIB_SOURCES src/lib1.cpp src/lib2.cpp)
+add_library(mylib ${LIB_SOURCES})
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{CMake: variables}
+    CMake provides different variables that simply cmake scripting, like:
+    \begin{itemize}
+        \item \texttt{CFLAGS}/\texttt{CXXFLAGS}: custom compilation flags for C/C++ executables;
+        \item \texttt{CMAKE\_CXX\_STANDARD}: the C++ standard to use;
+        \item \texttt{CMAKE\_BUILD\_TYPE}: the build type:
+        \begin{itemize}
+            \item \texttt{Debug}: no optimization, debug symbols;
+            \item \texttt{MinSizeRel}: optimization for size.
+            \item \texttt{RelWithDebInfo}: optimization, debug symbols;
+            \item \texttt{Release}: full optimization, no debug symbols.
+        \end{itemize}
+        
+        \item \texttt{CMAKE\_SOURCE\_DIR}: the (absolute) path of the source directory;
+        \item \texttt{CMAKE\_BINARY\_DIR}: the (absolute) path of the build directory;
+        \item \texttt{CMAKE\_CURRENT\_SOURCE\_DIR}: the directory of the current \textit{CMakeLists.txt}.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{CMake: interacting with the variables}
+    The full state of the cmake project is stored in the \texttt{CMakeCache.txt} file in the build directory.
+
+    Variables can be set, while calling \texttt{cmake} command, passing the \texttt{-D} flag, e.g. 
+\begin{lstlisting}
+cmake .. -DCMAKE_BUILD_TYPE=Debug   
+\end{lstlisting}
+
+
+To interact dynamically with the variables, there exists two executables: \alert{\texttt{ccmake}}, a CLI tool, and \alert{\texttt{cmake-gui}}, a graphical interface.
+\end{frame}
+
+\begin{frame}[fragile]{CMake: headers and libraries}
+    The main advantage of using cmake is its ability to easily handle executables headers and dependent libraries.
+
+    To specify the location of the headers of a given target, we use the function
+\begin{lstlisting}
+target_include_directories(<target> <PUBLIC | PRIVATE | INTERFACE> <include paths...>)
+\end{lstlisting}
+
+    Similarly, libraries are linked as
+\begin{lstlisting}
+target_link_libraries(<target> <PUBLIC | PRIVATE | INTERFACE> <include paths...>)
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{CMake: public, private and interface}
+    For both 
+    \href{https://cmake.org/cmake/help/latest/command/target_include_directories.html}{\texttt{target\_include\_directories}} 
+    and 
+    \href{https://cmake.org/cmake/help/latest/command/target_link_libraries.html#target-link-libraries}{\texttt{target\_link\_libraries}}
+    , we have 3 specifiers for the property usage of the current and dependent targets:
+    \begin{itemize}
+        \item \alert{\texttt{PUBLIC}}: the property is propagated to both the current target and its dependents;
+        \item \alert{\texttt{PRIVATE}}: the property is only applied to the current target;
+        \item \alert{\texttt{INTERFACE}}: the property is only applied to the dependents of the current target.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{CMake: subdirectories}
+    To simplify the management of a project, cmake allows the use of \emph{subdirectories}. 
+
+    One can write a \textit{CMakeLists.txt} file in a subdirectory and include it in the main one with the \texttt{add\_subdirectory} function:
+\begin{lstlisting}
+add_subdirectory(<path/to/subdir>)
+\end{lstlisting}
+    
+    This enables to have a \emph{modular} project structure, where the knowledge on \textit{how to build a target} is close to the source code.
+\end{frame}
+
+\begin{frame}[fragile]{CMake: file globbing}
+    The good cmake practice requires that all source files are explicitly listed in the target defition (mainly for clarity).
+
+    Still, there are few cases in which it is useful to use \emph{file globbing}, e.g. to create executables for each source file in a directory.
+
+    To do so, we can use the \texttt{file} function:
+\begin{lstlisting}
+file(GLOB SOURCES src/*.cpp)
+\end{lstlisting}
+    Doing so, we create the variable \texttt{SOURCES} that contains all the \texttt{.cpp} files in the \texttt{src} directory.
+\end{frame}
+
+
+\begin{frame}[fragile]{CMake: file globbing}
+    We can also do some cmake scripting to create a target for each source file in a directory, e.g.
+\begin{lstlisting}
+file(GLOB SOURCES src/*.cpp)
+foreach(source ${SOURCES})
+    get_filename_component(exec_name ${source} NAME_WE)
+    add_executable(${exec_name} ${source})
+endforeach()
+\end{lstlisting}
+\metroset{block=fill}
+\begin{block}{Note}
+    This globbing occurs at \emph{configure} time. 
+    If a new file is added to the directory, the project must be reconfigured, otherwise the new file will not be included in the build.
+\end{block}
+\end{frame}
+
+\begin{frame}[fragile]{CMake: logging}
+    As scripts become more complex, it is useful to have a way to log messages to the console. 
+
+    For this purpose, cmake provides the \href{https://cmake.org/cmake/help/latest/command/message.html}{\texttt{message}} function:
+\begin{lstlisting}
+message(<mode> "<message>")
+\end{lstlisting}
+where \texttt{mode} could be \texttt{STATUS}, \texttt{WARNING}, \texttt{SEND\_ERROR}, \texttt{FATAL\_ERROR} or \texttt{AUTHOR\_WARNING}.
+\end{frame}
+
+\begin{frame}[fragile]{CMake: functions and macros}
+    To avoid code duplication, cmake allows the definition of \emph{functions} and \emph{macros}. 
+
+    Their syntax is similar, but the main difference is that functions have their own scope, while macros are expanded in the caller's scope (are \textit{inlined}).
+
+    \begin{columns}[c]
+      \begin{column}{0.48\textwidth}
+\begin{lstlisting}
+function(<name> <args ...>)
+    <body>
+endfunction()
+\end{lstlisting}
+      \end{column}
+      \begin{column}{0.46\textwidth}
+\begin{lstlisting}
+macro(<name> <args ...>)
+    <body>
+endmacro()
+\end{lstlisting}
+      \end{column}
+    \end{columns}
+    
+\end{frame}
+
+\begin{frame}[fragile]{CMake: a function example}
+    An example of function is the one printing the name of the variable, as well as its value:
+\begin{lstlisting}
+function(print var)    
+   message(STATUS " > ${var} = ${${var}}") 
+endfunction()
+\end{lstlisting} \vspace{3mm}
+
+    \begin{columns}[t]
+      \begin{column}{0.48\textwidth}
+          The script
+\begin{lstlisting}
+set(MY_VAR "Hello World")
+print(MY_VAR)
+print(MY_UNSET_VAR)
+\end{lstlisting}
+      \end{column}
+      \begin{column}{0.46\textwidth}
+          Produces the output
+          \begin{verbatim}
+ > MY_VAR = Hello World
+ > MY_UNSET_VAR =\end{verbatim}
+      \end{column}
+    \end{columns}
+
+\end{frame}
+
+\begin{frame}[fragile]{CMake: function with variable number of arguments}
+    Function can accept a variable number of arguments, and provide default variable names to access them, particularly:
+    \begin{itemize}
+        \item \texttt{ARGC}: the number of arguments;
+        \item \texttt{ARGN}: the full list of arguments;
+        \item \texttt{ARGV0}, \texttt{ARGV1}, \texttt{ARGV2}, \ldots: the first, second, ... argument.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{CMake: function with variable number of arguments}
+    In light of this, we can define a function that prints all its arguments:
+    \begin{lstlisting}
+function(print)
+    foreach(arg ${ARGN})
+        message(STATUS " > ${arg} = ${${arg}}")
+    endforeach()
+endfunction()
+\end{lstlisting}
+\end{frame}

@@ -1,0 +1,40 @@
+\section{Environment setup}
+\begin{frame}{The preliminaries}
+    Before actually starting the course we need some setup...
+
+    We need:
+    \begin{itemize}
+        \item a \emph{compiler}; 
+        \item the \emph{make} and \emph{cmake} programs;
+        \item an \emph{IDE} to modify our code (VSCode).
+    \end{itemize}
+    
+\end{frame}
+
+
+\begin{frame}[fragile]{Unix systems}
+    The \emph{make} program just works on unix-like system, i.e., Linux and MacOs. 
+    Windows is not ufficially supported, and thus is not covered in this course, so please use \textit{WSL}, a \textit{docker container} or a \textit{virtual machine}.
+
+    On Ubuntu:
+\begin{lstlisting}
+sudo apt update
+sudo apt install -y build-essential git \end{lstlisting}
+
+    On MacOs, make sure \texttt{xcode} and \texttt{homebrew} are installed, then
+\begin{lstlisting}
+brew install make\end{lstlisting}
+
+    
+    
+\end{frame}
+
+\begin{frame}{Compilers}
+    Generally speaking, there exists multiple compilers. For unix systems, the most famous ones are the \emph{GNU Compiler Collection} (GCC) and the \emph{LLVM}-based {CLANG}.
+
+    Other known solutions are the Intel C++, and for windows the \emph{Microsoft Visual Studio Compiler} (MVSC).
+
+    We will mainly work with GCC.
+\end{frame}
+
+
